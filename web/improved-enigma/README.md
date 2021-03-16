@@ -1,18 +1,16 @@
 # improved-enigma
 
-> A Vue.js project
+> 希望这是一个优雅的前端
 
-## Build Setup
+## 构建启动
 
 ``` bash
-# install dependencies
+# 依赖安装
 npm install
 
-# serve with hot reload at localhost:8080
+# 热加载启动 localhost:8080
 npm run dev
 
-# build for production with minification
+# 构建产品
 npm run build
 ```
-
-For detailed explanation on how things work, consult the [docs for vue-loader](http://vuejs.github.io/vue-loader).
