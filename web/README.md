@@ -1,13 +1,15 @@
-### 启动讲解
+# 前端
 
-###### 配置vscode
-将 /vscode/settings.json文件配置到vscode中
+希望这是一个优雅的前端
 
-###### 启动
-1 安装依赖：
+---
 
-`npm install`
+## 指南
 
-2 运行本地环境
+1. 安装依赖：
 
-`npm run local`
+    `npm install`
+
+2. 运行开发环境
+
+    `npm run dev`
