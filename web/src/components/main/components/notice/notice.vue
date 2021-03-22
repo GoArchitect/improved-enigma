@@ -2,23 +2,37 @@
   <div class="notice">
     <Tooltip content="消息" placement="bottom">
       <Badge :count="noticeNumber" class-name="demo-badge-alone">
-        <Icon @click="openNotice" class="demo-badge" size="18" type="icon iconfont iconnews"></Icon>
+        <Icon
+          @click="openNotice"
+          class="demo-badge"
+          size="18"
+          type="icon iconfont iconnews"
+        ></Icon>
       </Badge>
     </Tooltip>
-    <div :class="modalOpen?'show':''" class="notice-main">
-      <div :class="modalOpen?'show':''" @click="modalOpen=false" class="notice-bg"></div>
-      <div :class="modalOpen?'show':''" class="notice-box">
+    <div :class="modalOpen ? 'show' : ''" class="notice-main">
+      <div
+        :class="modalOpen ? 'show' : ''"
+        @click="modalOpen = false"
+        class="notice-bg"
+      ></div>
+      <div :class="modalOpen ? 'show' : ''" class="notice-box">
         <div class="header">
-          <div class="item">消息通知({{noticeNumber}})</div>
+          <div class="item">消息通知({{ noticeNumber }})</div>
           <Icon @click="modalClose" class="close" size="24" type="ios-close" />
         </div>
 
         <div class="notice-list" ref="noticeList">
-          <div :key="item.id" @click.stop="getDetail(item)" class="item" v-for="item in noticeList">
+          <div
+            :key="item.id"
+            @click.stop="getDetail(item)"
+            class="item"
+            v-for="item in noticeList"
+          >
             <img alt src="@/assets/images/message.png" />
             <div class="info">
-              <p class="title">{{item.title}}</p>
-              <p class="time">{{item.updateTime}}</p>
+              <p class="title">{{ item.title }}</p>
+              <p class="time">{{ item.updateTime }}</p>
             </div>
           </div>
           <InfiniteLoading @infinite="scroll" ref="infiniteLoading">
@@ -26,26 +40,30 @@
           </InfiniteLoading>
         </div>
       </div>
-      <div :class="detailModalOpen?'show':''" class="notice-detail">
+      <div :class="detailModalOpen ? 'show' : ''" class="notice-detail">
         <div class="title">
-          <div class="item">{{noticeDetail.title}}</div>
-          <Icon @click="detailModalOpen=false" class="close" type="md-close" />
+          <div class="item">{{ noticeDetail.title }}</div>
+          <Icon
+            @click="detailModalOpen = false"
+            class="close"
+            type="md-close"
+          />
         </div>
-        <div class="detail">{{noticeDetail.content}}</div>
-        <p class="time">{{noticeDetail.updateTime}}</p>
+        <div class="detail">{{ noticeDetail.content }}</div>
+        <p class="time">{{ noticeDetail.updateTime }}</p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { noticeApi } from '@/api/notice';
-import { socketBaseUrl } from '@/lib/http';
-import InfiniteLoading from 'vue-infinite-loading';
+import { noticeApi } from "@/api/notice";
+import { socketBaseUrl } from "@/lib/http";
+import InfiniteLoading from "vue-infinite-loading";
 export default {
-  name: 'Notice',
+  name: "Notice",
   components: {
-    InfiniteLoading
+    InfiniteLoading,
   },
   data() {
     return {
@@ -61,13 +79,13 @@ export default {
       detailModalOpen: false,
       searchData: {
         pageSize: 10,
-        pageNum: 1
+        pageNum: 1,
       },
       noticeDetail: {
-        title: '',
-        content: '',
-        updateTime: ''
-      }
+        title: "",
+        content: "",
+        updateTime: "",
+      },
     };
   },
   mounted() {
@@ -84,7 +102,7 @@ export default {
     },
     userInfo() {
       return this.$store.state.user.userLoginInfo;
-    }
+    },
   },
   methods: {
     initWebSocket() {
@@ -101,31 +119,31 @@ export default {
       this.heartTimer = setInterval(() => {
         this.heartbeat();
       }, 5000);
-      this.$once('hook:beforeDestroy', () => {
+      this.$once("hook:beforeDestroy", () => {
         clearInterval(this.heartTimer);
-        this.$store.commit('restNotice');
+        this.$store.commit("restNotice");
       });
     },
     // socket连接出错
     websocketOnerror() {
-      console.log('socket出错啦');
+      console.log("socket出错啦");
     },
     // socket收到消息
     websocketOnmessage(e) {
-      this.$store.commit('updateNoticeNum', Number(e.data));
+      this.$store.commit("updateNoticeNum", Number(e.data));
     },
     // socket关闭
     websocketClose() {
-      console.log('socket掉线啦');
+      console.log("socket掉线啦");
     },
     // 心跳包
     heartbeat() {
       let data = {
-        jsonStr: '',
-        messageType: 3
+        jsonStr: "",
+        messageType: 3,
       };
       let subStr = {
-        employeeId: this.userInfo.id
+        employeeId: this.userInfo.id,
       };
       data.jsonStr = JSON.stringify(subStr);
       this.socket.send(JSON.stringify(data));
@@ -158,22 +176,34 @@ export default {
       this.getNoticeList($state);
     },
     async getNoticeList($state) {
-      const result = await noticeApi.getNoticeUnreadList({
-        ...this.searchData
-      });
+      // const result = await noticeApi.getNoticeUnreadList({
+      //   ...this.searchData,
+      // });
+      const result = {
+        code: 1,
+        msg: "操作成功!",
+        success: true,
+        data: {
+          pageNum: 1,
+          pageSize: 10,
+          total: 0,
+          pages: 0,
+          list: [],
+        },
+      };
       // 请求通知成功，全局更改消息数量
-      this.$store.commit('updateNoticeNum', result.data.total);
+      this.$store.commit("updateNoticeNum", result.data.total);
       $state && $state.loaded();
       if (!result.data.list.length) {
         $state && $state.complete();
       } else {
         this.searchData.pageNum++;
       }
-      this.$store.commit('updateNotice', result.data.list);
+      this.$store.commit("updateNotice", result.data.list);
     },
     openNotice() {
       this.searchData.pageNum = 1;
-      this.$store.commit('restNotice');
+      this.$store.commit("restNotice");
       this.getNoticeList();
       this.modalOpen = true;
     },
@@ -181,8 +211,8 @@ export default {
       this.getNoticeList();
       this.detailModalOpen = false;
       this.modalOpen = false;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -270,7 +300,7 @@ export default {
     }
   }
   .notice-list {
-    height: calc(~'100% - 50px') !important;
+    height: calc(~"100% - 50px") !important;
     padding-top: 10px;
     overflow: auto;
     .no-data {
@@ -290,7 +320,7 @@ export default {
         &::before {
           position: absolute;
           left: 0;
-          content: '';
+          content: "";
           width: 2px;
           height: 100%;
           background: #5cb85c;
