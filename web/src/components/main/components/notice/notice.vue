@@ -89,7 +89,7 @@ export default {
     };
   },
   mounted() {
-    this.initWebSocket();
+    // this.initWebSocket();
   },
   computed: {
     // 消息集合
@@ -108,6 +108,7 @@ export default {
     initWebSocket() {
       this.socket = new WebSocket(
         `${this.socketBaseUrl}webSocket/${this.userInfo.id}`
+        // `${this.socketBaseUrl}`
       );
       this.socket.onopen = this.websocketOnopen;
       this.socket.onerror = this.websocketOnerror;
