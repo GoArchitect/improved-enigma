@@ -153,13 +153,13 @@
             width="40"
             height="40"
             v-if="index % 2 === 0"
-            src="http://q8deiydpv.bkt.clouddn.com/image/peony1.jpg"
+            src="http://qiniu.kareza.cn/house.jpeg"
           />
           <img
             v-if="index % 2 === 1"
             width="40"
             height="40"
-            src="http://q8deiydpv.bkt.clouddn.com/image/peony2.jpg"
+            src="http://qiniu.kareza.cn/house.jpeg"
           />
         </template>
       </Table>

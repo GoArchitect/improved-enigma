@@ -148,18 +148,18 @@
         highlight-row
         ref="mainTable"
       >
-        <template slot-scope="{ row, index }" slot="imageUrl">
+        <template slot-scope="{ index }" slot="imageUrl">
           <img
             width="40"
             height="40"
             v-if="index % 2 === 0"
-            src="http://q8deiydpv.bkt.clouddn.com/image/peony1.jpg"
+            src="http://qiniu.kareza.cn/house.jpeg"
           />
           <img
             v-if="index % 2 === 1"
             width="40"
             height="40"
-            src="http://q8deiydpv.bkt.clouddn.com/image/peony2.jpg"
+            src="http://qiniu.kareza.cn/house2.jpeg"
           />
         </template>
       </Table>
@@ -217,7 +217,7 @@
       @on-cancel="saveFormClose"
       width="500"
     >
-      <PeonyListForm
+      <HouseListForm
         :isUpdate="saveModal.isUpdate"
         :updateData="saveModal.updateData"
         @on-form-close="saveFormClose"
@@ -231,6 +231,7 @@
 import { dateTimeRangeConvert } from "@/lib/util";
 import { PAGE_SIZE_OPTIONS } from "@/constants/table-page";
 import { peonyApi } from "@/api/peony";
+import { houseApi } from "@/api/house";
 import HouseListForm from "./components/house-list-form";
 const PAGE_SIZE_INIT = 20;
 export default {
@@ -300,93 +301,93 @@ export default {
           {
             title: "房源编号",
             key: "id",
-            tableColumn: "t_peony.id",
+            tableColumn: "t_house.id",
             sortable: "custom",
           },
           {
             title: "房东姓名",
-            key: "kind",
-            tableColumn: "t_peony.kind",
+            key: "houseOwnerName",
+            tableColumn: "t_house.houseOwnerName",
             sortable: "custom",
           },
           {
             title: "性别",
-            key: "name",
-            tableColumn: "t_peony.name",
+            key: "sex",
+            tableColumn: "t_house.sex",
             sortable: "custom",
           },
           {
             title: "证件号码",
-            key: "color",
-            tableColumn: "t_peony.color",
+            key: "idNumber",
+            tableColumn: "t_house.idNumber",
             sortable: "custom",
           },
           {
             title: "联系电话",
-            key: "imageUrl",
-            tableColumn: "t_peony.image_url",
+            key: "telephone",
+            tableColumn: "t_house.telephone",
             sortable: "custom",
-            slot: "imageUrl",
           },
           {
             title: "权属证明文件",
-            key: "createTime",
-            tableColumn: "t_peony.create_time",
+            key: "authorizedMaterialFile",
+            tableColumn: "t_house.authorizedMaterialFile",
             sortable: "custom",
           },
           {
             title: "权属材料编号",
-            key: "updateTime",
-            tableColumn: "t_peony.update_time",
+            key: "authorizedMaterialNumber",
+            tableColumn: "t_house.authorizedMaterialNumber",
             sortable: "custom",
           },
           {
             title: "小区名称",
-            key: "updateTime",
-            tableColumn: "t_peony.update_time",
+            key: "communityName",
+            tableColumn: "t_house.communityName",
             sortable: "custom",
           },
           {
             title: "地址",
-            key: "updateTime",
-            tableColumn: "t_peony.update_time",
+            key: "address",
+            tableColumn: "t_house.address",
             sortable: "custom",
           },
           {
             title: "几室几厅",
-            key: "updateTime",
-            tableColumn: "t_peony.update_time",
+            key: "roomsAndHalls",
+            tableColumn: "t_house.roomsAndHalls",
             sortable: "custom",
           },
           {
             title: "面积",
-            key: "updateTime",
-            tableColumn: "t_peony.update_time",
+            key: "area",
+            tableColumn: "t_house.area",
             sortable: "custom",
           },
           {
             title: "楼层及朝向",
-            key: "updateTime",
-            tableColumn: "t_peony.update_time",
+            key: "floorAndOrientation",
+            tableColumn: "t_house.floorAndOrientation",
             sortable: "custom",
           },
           {
             title: "月租金",
-            key: "updateTime",
-            tableColumn: "t_peony.update_time",
+            key: "monthlyRent",
+            tableColumn: "t_house.monthlyRent",
             sortable: "custom",
           },
           {
             title: "图片",
-            key: "updateTime",
-            tableColumn: "t_peony.update_time",
+            key: "picture",
+            tableColumn: "t_house.picture",
             sortable: "custom",
+            slot: "imageUrl",
           },
           {
-              title: '出租情况',
-              key: 'updateTime',
-              tableColumn: 't_peony.update_time',
-              sortable: 'custom'
+            title: "出租情况",
+            key: "rentalSituation",
+            tableColumn: "t_house.rentalSituation",
+            sortable: "custom",
           },
           {
             title: "操作",
@@ -409,17 +410,17 @@ export default {
                   },
                 },
                 {
-                  title: '删除',
+                  title: "删除",
                   directives: [
                     {
-                      name: 'privilege',
-                      value: 'email-delete'
-                    }
+                      name: "privilege",
+                      value: "email-delete",
+                    },
                   ],
                   action: () => {
                     this.deleteEmail(params);
-                  }
-                }
+                  },
+                },
               ];
               return this.$tableAction(h, actions);
             },
@@ -463,8 +464,21 @@ export default {
     async queryList() {
       this.mainTable.loading = true;
       try {
-        let params = this.convertQueryParam();
-        let result = await peonyApi.queryPeony(params);
+        // TODO: 待修改
+        // let params = this.convertQueryParam();
+        let params = {
+          orders: [
+            {
+              asc: true,
+              column: "id",
+            },
+          ],
+          pageNum: 1,
+          pageSize: 10,
+          searchCount: true,
+        };
+        let result = await houseApi.queryHouse(params);
+        console.log(result);
         this.mainTable.data = result.data.list;
         this.mainTablePage.total = result.data.total;
       } finally {
