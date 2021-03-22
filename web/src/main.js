@@ -22,6 +22,9 @@ import Enum from 'vue-enum';
 import enumInfo from '@/constants';
 // 处理table操作按钮
 import tableAction from './lib/table-action';
+// 将页面转换成PDF
+import htmlToPdf from '@/components/utils/htmlToPdf'
+Vue.use(htmlToPdf)
 
 // 时间
 import moment from 'moment';
