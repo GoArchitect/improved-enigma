@@ -1,11 +1,14 @@
 
 import Main from '@/components/main';
 
-import { peony } from './peony';
-import { emailSetting } from './email';
-import { keepAlive } from './keep-alive';
-import { notice } from './notice';
-import { threeRouter } from './three-router';
+import { house } from './house';
+import { authenticate } from './authenticate';
+import { contract } from './contract';
+// import { peony } from './peony';
+// import { emailSetting } from './email';
+// import { keepAlive } from './keep-alive';
+// import { notice } from './notice';
+// import { threeRouter } from './three-router';
 
 // 业务
 export const business = [
@@ -19,11 +22,14 @@ export const business = [
       icon: 'icon iconfont iconyoujianguanli'
     },
     children: [
-      ...peony,
-      ...emailSetting,
-      ...keepAlive,
-      ...notice,
-      ...threeRouter
+      ...house,
+      ...authenticate,
+      ...contract
+      // ...peony,
+      // ...emailSetting,
+      // ...keepAlive,
+      // ...notice,
+      // ...threeRouter
     ]
   }
 ];
