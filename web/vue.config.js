@@ -12,7 +12,7 @@ const productionGzipExtensions = ['js', 'css'];
 // 如果您的应用程序部署在子路径中，则需要在这指定子路径
 // 例如：https://www.foobar.com/my-app/
 // 需要将它改为'/my-app/'
-const publicPath = process.env.NODE_ENV === 'production' ? '/demo' : '/';
+const publicPath = process.env.NODE_ENV === 'production' ? '/' : '/';
 const lintOnSave = process.env.NODE_ENV === 'production';
 
 module.exports = {
@@ -46,9 +46,25 @@ module.exports = {
   // 设为false打包时不生成.map文件
   productionSourceMap: false,
   // 这里写你调用接口的基础路径，来解决跨域，如果设置了代理，那你本地开发环境的axios的baseUrl要写为 '' ，即空字符串
-  // devServer: {
-  //   proxy: 'localhost:3000'
-  // }
+  devServer: {
+    proxy: {
+      '/improved-enigma-api': {
+        target: 'http://47.114.73.132:8001/improved-enigma-api',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/improved-enigma-api': '/'
+        }
+      },
+      '/socket': {
+        target: 'ws://47.114.73.132:8001/improved-enigma-api',
+        changeOrigin: true,
+        ws: true,
+        pathRewrite: {
+          '^/socket': '/'
+        }
+      },
+    }
+  },
   configureWebpack: {
     plugins: [
       // 开启gzip压缩
