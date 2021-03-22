@@ -2,7 +2,7 @@
   <Layout class="main" style="height: 100%">
     <Sider
       :collapsed-width="60"
-      :style="{overflow: 'hidden'}"
+      :style="{ overflow: 'hidden' }"
       :width="185"
       class="left-sider"
       collapsible
@@ -19,14 +19,18 @@
         ref="sideMenu"
       >
         <!-- 需要放在菜单上面的内容，如Logo，写在side-menu标签内部，如下 -->
-        <div :class="{'collapsed':collapsed}" class="logo-con">
+        <div :class="{ collapsed: collapsed }" class="logo-con">
           <img :src="maxLogo" key="max-logo" v-show="!collapsed" />
           <img :src="minLogo" key="min-logo" v-show="collapsed" />
         </div>
-        <div :class="{'collapsed':collapsed}" class="search-bar">
+        <div :class="{ collapsed: collapsed }" class="search-bar">
           <div class="search-box">
             <Input placeholder="搜索" v-model="searchKeyWord">
-              <Icon @click="collapsed=false" slot="prefix" type="ios-search" />
+              <Icon
+                @click="collapsed = false"
+                slot="prefix"
+                type="ios-search"
+              />
             </Input>
             <div class="searchMenu" v-if="searchKeyWord">
               <ul>
@@ -34,12 +38,16 @@
                   :key="index"
                   @click="toRoute(item.name)"
                   v-for="(item, index) in searchListResult"
-                >{{item.title}}</li>
+                >
+                  {{ item.title }}
+                </li>
                 <li
                   @click="searchKeyWord = ''"
                   class="noData"
                   v-if="searchListResult.length == 0"
-                >未检索到数据</li>
+                >
+                  未检索到数据
+                </li>
               </ul>
             </div>
           </div>
@@ -59,11 +67,11 @@
           <language
             :lang="local"
             @on-lang-change="setLocal"
-            style="margin-right: 10px;"
+            style="margin-right: 10px"
             v-if="$config.useI18n"
           />
           <Notice />
-          <Fullscreen style="margin-right: 10px;" v-model="isFullscreen" />
+          <Fullscreen style="margin-right: 10px" v-model="isFullscreen" />
         </HeaderBar>
       </Header>
       <Content class="main-content-con" v-if="isLoadedPrvileges">
@@ -82,7 +90,12 @@
                 <router-view :key="key" />
               </keep-alive>
             </transition>
-            <ABackTop :bottom="80" :height="100" :right="50" container=".content-wrapper"></ABackTop>
+            <ABackTop
+              :bottom="80"
+              :height="100"
+              :right="50"
+              container=".content-wrapper"
+            ></ABackTop>
           </Content>
         </Layout>
       </Content>
@@ -90,24 +103,24 @@
   </Layout>
 </template>
 <script>
-import ABackTop from './components/a-back-top';
-import SideMenu from './components/side-menu';
-import HeaderBar from './components/header-bar';
-import TagsNav from './components/tags-nav';
-import Notice from './components/notice/notice';
-import User from './components/user';
-import { topMenuArray } from '@/router';
-import Fullscreen from './components/fullscreen';
-import Language from './components/language';
-import { mapMutations, mapActions, mapGetters } from 'vuex';
-import { getNewTagList, routeEqual, getShowMenu } from '@/lib/menu-func';
-import { routers } from '@/router/routers';
-import minLogo from '@/assets/images/logo-min.png';
-import maxLogo from '@/assets/images/logo.png';
-import { loginApi } from '@/api/login';
-import './main.less';
+import ABackTop from "./components/a-back-top";
+import SideMenu from "./components/side-menu";
+import HeaderBar from "./components/header-bar";
+import TagsNav from "./components/tags-nav";
+import Notice from "./components/notice/notice";
+import User from "./components/user";
+import { topMenuArray } from "@/router";
+import Fullscreen from "./components/fullscreen";
+import Language from "./components/language";
+import { mapMutations, mapActions, mapGetters } from "vuex";
+import { getNewTagList, routeEqual, getShowMenu } from "@/lib/menu-func";
+import { routers } from "@/router/routers";
+import minLogo from "@/assets/images/logo-min.png";
+import maxLogo from "@/assets/images/logo.png";
+import { loginApi } from "@/api/login";
+import "./main.less";
 export default {
-  name: 'Main',
+  name: "Main",
   components: {
     SideMenu,
     HeaderBar,
@@ -116,17 +129,17 @@ export default {
     TagsNav,
     Fullscreen,
     User,
-    ABackTop
+    ABackTop,
   },
   data() {
     return {
       //是否加载完了权限
-      isLoadedPrvileges:false,
+      isLoadedPrvileges: false,
       //用户所拥有的顶级菜单数组
       userTopMenuArray: [],
       //当前顶级菜单名字
-      currentTopMenuName: '',
-      currentTopMenuTitle: '',
+      currentTopMenuName: "",
+      currentTopMenuTitle: "",
       // 是否折叠
       collapsed: false,
       minLogo,
@@ -135,15 +148,15 @@ export default {
       isFullscreen: false,
       // 缓存的路由：
       includes: [],
-      searchKeyWord: '',
+      searchKeyWord: "",
       searchList: [],
       searchListResult: [],
       menuList: [],
-      menuNameMatchedMap: new Map()
+      menuNameMatchedMap: new Map(),
     };
   },
   computed: {
-    ...mapGetters(['errorCount', 'userMenuPrivilege']),
+    ...mapGetters(["errorCount", "userMenuPrivilege"]),
     tagNavList() {
       return this.$store.state.app.tagNavList;
     },
@@ -155,12 +168,12 @@ export default {
     },
     cacheList() {
       const list = [
-        'ParentView',
+        "ParentView",
         ...(this.tagNavList.length
           ? this.tagNavList
-              .filter(item => !(item.meta && item.meta.noKeepAlive))
-              .map(item => item.name)
-          : [])
+              .filter((item) => !(item.meta && item.meta.noKeepAlive))
+              .map((item) => item.name)
+          : []),
       ];
       return list;
     },
@@ -175,13 +188,13 @@ export default {
     },
     key() {
       return this.$route.name;
-    }
+    },
   },
   watch: {
     searchKeyWord(val) {
       if (val) {
         this.searchListResult = this.searchList.filter(
-          item => item.title.indexOf(val) >= 0
+          (item) => item.title.indexOf(val) >= 0
         );
       }
     },
@@ -192,9 +205,9 @@ export default {
           name,
           query,
           params,
-          meta
+          meta,
         },
-        type: 'push'
+        type: "push",
       });
       this.setBreadCrumb(newRoute);
       // this.pushKeepAliveIncludes(newRoute);
@@ -215,7 +228,7 @@ export default {
       }
       //默认缓存住所有
       this.pushKeepAliveIncludes(name);
-    }
+    },
   },
   mounted() {
     /**
@@ -234,18 +247,18 @@ export default {
   },
   methods: {
     ...mapMutations([
-      'setBreadCrumb',
-      'setTagNavList',
-      'pushKeepAliveIncludes',
-      'clearKeepAliveIncludes',
-      'deleteKeepAliveIncludes',
-      'deleteOtherKeepAliveIncludes',
-      'addTag',
-      'setLocal',
-      'setHomeRoute',
-      'closeTag'
+      "setBreadCrumb",
+      "setTagNavList",
+      "pushKeepAliveIncludes",
+      "clearKeepAliveIncludes",
+      "deleteKeepAliveIncludes",
+      "deleteOtherKeepAliveIncludes",
+      "addTag",
+      "setLocal",
+      "setHomeRoute",
+      "closeTag",
     ]),
-    ...mapActions(['handleLogin']),
+    ...mapActions(["handleLogin"]),
 
     jumpRouter() {
       const { name, params, query, meta } = this.$route;
@@ -254,13 +267,13 @@ export default {
           name,
           params,
           query,
-          meta
-        }
+          meta,
+        },
       });
       // 如果当前打开页面不在标签栏中，跳到homeName页
-      if (!this.tagNavList.find(item => item.name === this.$route.name)) {
+      if (!this.tagNavList.find((item) => item.name === this.$route.name)) {
         this.$router.push({
-          name: this.$config.homeName
+          name: this.$config.homeName,
         });
       }
     },
@@ -274,15 +287,112 @@ export default {
         this.$refs.sideMenu.updateActiveName(this.$route.name);
         this.jumpRouter();
         this.$Spin.hide();
-        
       } else {
         //如果页面刷新，需要重新获取权限
         (async () => {
           this.$Spin.show();
-          let sessionResult = await loginApi.getSession();
+          // TODO: 待修改数据为接口调用获得
+          // let sessionResult = await loginApi.getSession();
+          let sessionResult = {
+            code: 1,
+            msg: "操作成功!",
+            success: true,
+            data: {
+              id: 1,
+              loginName: "sa",
+              nickName: "15515515515",
+              actualName: "管理员",
+              phone: "13112312131",
+              idCard: "410306199202020020",
+              birthday: "1992-02-02",
+              createUser: null,
+              departmentId: 1,
+              isLeave: 0,
+              isDisabled: 0,
+              departmentName: "1024创新实验室",
+              email: null,
+              isSuperMan: true,
+              privilegeList: [
+                {
+                  key: "Contract",
+                  type: 1,
+                  url: "/contract",
+                  parentKey: "Business",
+                },
+                {
+                  key: "Transaction",
+                  type: 1,
+                  url: "/contract/transaction",
+                  parentKey: "Contract",
+                },
+                {
+                  key: "Tenancy",
+                  type: 1,
+                  url: "/contract/tenancy",
+                  parentKey: "Contract",
+                },
+                {
+                  key: "Intermediate",
+                  type: 1,
+                  url: "/contract/intermediate",
+                  parentKey: "Contract",
+                },
+                {
+                  key: "transaction-list-add",
+                  type: 2,
+                  url: "transacationController.add",
+                  parentKey: "Transaction",
+                },
+                {
+                  key: "Authenticate",
+                  type: 1,
+                  url: "/authenticate",
+                  parentKey: "Business",
+                },
+                {
+                  key: "Identity",
+                  type: 1,
+                  url: "/authenticate/identity",
+                  parentKey: "Authenticate",
+                },
+                {
+                  key: "Property",
+                  type: 1,
+                  url: "/authenticate/property",
+                  parentKey: "Authenticate",
+                },
+                {
+                  key: "House",
+                  type: 1,
+                  url: "/house",
+                  parentKey: "Business",
+                },
+                {
+                  key: "NewHouseList",
+                  type: 1,
+                  url: "/house/new-house-list",
+                  parentKey: "House",
+                },
+                {
+                  key: "OldHouseList",
+                  type: 1,
+                  url: "/house/old-house-list",
+                  parentKey: "House",
+                },
+                {
+                  key: "Business",
+                  type: 1,
+                  url: "/business",
+                  parentKey: null,
+                }
+              ],
+              xaccessToken:
+                "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzOWJmZWIyMC1kNDYxLTQyNjQtODY2NC1iMTk3ZWZjNjU4NGMiLCJpZCI6MSwibmJmIjoxNjE2MzExNjI2LCJleHAiOjE2MTYzOTgwMjZ9.9pJbIGokiZKVQsMcu9x8U5kNssTuJV0fKi921fSsh506BdJ8waBeeVtJHBfw4hemxOCCO0ksicFt_cGAEJa7oQ",
+            },
+          };
           //设置权限
           this.$store.commit(
-            'setUserPrivilege',
+            "setUserPrivilege",
             sessionResult.data.privilegeList
           );
           this.isLoadedPrvileges = true;
@@ -310,8 +420,8 @@ export default {
         this.currentTopMenuName = arr[0].name;
         this.currentTopMenuTitle = arr[0].meta.title;
       } else {
-        this.currentTopMenuName = '';
-        this.currentTopMenuTitle = '';
+        this.currentTopMenuName = "";
+        this.currentTopMenuTitle = "";
       }
       this.userTopMenuArray = arr;
     },
@@ -351,8 +461,8 @@ export default {
             let menu = {
               name: router.name,
               meta: router.meta,
-              icon: _.isUndefined(router.meta.icon) ? '' : router.meta.icon,
-              children: []
+              icon: _.isUndefined(router.meta.icon) ? "" : router.meta.icon,
+              children: [],
             };
             this.menuNameMatchedMap.set(menu.name, [menu.name]);
             privilegeTree.push(menu);
@@ -363,16 +473,19 @@ export default {
           }
         }
       }
-      console.log('privilegeTree',privilegeTree)
+      console.log("privilegeTree", privilegeTree);
       this.menuList = privilegeTree;
     },
 
     recursion(children, parentMenu) {
       for (const router of children) {
-          //验证权限
-        if (this.$store.state.user.privilegeMenuKeyList.indexOf(router.name) ===-1) {
+        //验证权限
+        if (
+          this.$store.state.user.privilegeMenuKeyList.indexOf(router.name) ===
+          -1
+        ) {
           continue;
-        }  
+        }
 
         //过滤非菜单
         if (!router.meta.hideInMenu) {
@@ -389,12 +502,12 @@ export default {
           let menu = {
             name: router.name,
             meta: router.meta,
-            icon: _.isUndefined(router.meta.icon) ? '' : router.meta.icon,
-            children: []
+            icon: _.isUndefined(router.meta.icon) ? "" : router.meta.icon,
+            children: [],
           };
           this.searchList.push({
             name: router.name,
-            title: router.meta.title
+            title: router.meta.title,
           });
 
           let menuNameArray = this.menuNameMatchedMap.get(parentMenu.name);
@@ -422,20 +535,20 @@ export default {
     },
     turnToPage(route) {
       let { name, params, query } = {};
-      if (typeof route === 'string') name = route;
+      if (typeof route === "string") name = route;
       else {
         name = route.name;
         params = route.params;
         query = route.query;
       }
-      if (name.indexOf('isTurnByHref_') > -1) {
-        window.open(name.split('_')[1]);
+      if (name.indexOf("isTurnByHref_") > -1) {
+        window.open(name.split("_")[1]);
         return;
       }
       this.$router.push({
         name,
         params,
-        query
+        query,
       });
     },
     handleCollapsedChange(state) {
@@ -443,8 +556,8 @@ export default {
     },
     handleCloseTag(res, type, route) {
       let keepRouter = route ? route.name : null;
-      if (type !== 'others') {
-        if (type === 'all') {
+      if (type !== "others") {
+        if (type === "all") {
           this.turnToPage(this.$config.homeName);
           this.clearKeepAliveIncludes(this.$config.homeName);
         } else {
@@ -466,9 +579,9 @@ export default {
     // 跳转路由
     toRoute(name) {
       this.$router.push({ name });
-      this.searchKeyWord = '';
-    }
-  }
+      this.searchKeyWord = "";
+    },
+  },
 };
 </script>
 <style lang="less" scoped>
