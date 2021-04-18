@@ -7,7 +7,7 @@
     <div class="content">
       <header class="logo center">
         <img alt
-             src="../../assets/images/login-logo.png" />
+             src="../../assets/images/login-logo.png"/>
       </header>
       <div class="form-con">
         <login-form @on-success-valid="handleSubmit"></login-form>
@@ -19,8 +19,7 @@
 <script>
 import LoginForm from './components/login-form';
 import { mapActions } from 'vuex';
-import $ from 'jquery';
-import { lonWave, canvasParticle } from './canvas';
+
 export default {
   name: 'login',
   props: {},
@@ -28,12 +27,13 @@ export default {
     LoginForm
   },
   data () {
-    return {}
+    return {};
   },
   computed: {},
   watch: {},
   filters: {},
-  created () {},
+  created () {
+  },
   mounted () {
     this.$Spin.hide();
   },
